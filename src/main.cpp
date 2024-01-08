@@ -1,5 +1,7 @@
 // main.cpp
+#define RAYGUI_IMPLEMENTATION
 #include <raylib.h>
+#include <raygui.h>
 #define WINDOW_WIDTH 850
 #define WINDOW_HEIGHT 850
 #include <cmath>
@@ -16,7 +18,7 @@
  * 
  * @return A vector of Vector2 points representing the SuperShape.
 */
-std::vector<Vector2> getSuperShapesPoints(Vector2 position, float a, float b, float m, float n1, float n2, float n3, int pi_multiply) {
+std::vector<Vector2> getSuperShapesPoints(Vector2 position, float a, float b, float m, float n1, float n2, float n3, float pi_multiply) {
     std::vector<Vector2> points;
 
     for (float angle = 0; angle <= PI * pi_multiply; angle += 0.01) {
@@ -44,11 +46,11 @@ int main() {
 	Vector2 center = {WINDOW_WIDTH/2, WINDOW_HEIGHT/2};
 	float a = 400.0f;
 	float b = 400.0f;
-	float m = 1.5f;		// Controls the number of lobes/vertex.
+	float m = 2.0f;		// Controls the number of lobes/vertex.
 	float n1 = 1.0f;	// Inversly proportional to size of SuperShape.
 	float n2 = 1.0f;	// 
-	float n3 = 0.0f;
-	int pi_multiply = 20;
+	float n3 = 1.0f;
+	float pi_multiply = 20;
 
 	// Getting the points of SuperShape.
 	std::vector<Vector2> points = getSuperShapesPoints(center, a, b, m, n1, n2, n3, pi_multiply);
@@ -62,7 +64,6 @@ int main() {
 
    	// Draw
     BeginDrawing();
-    DrawText("Hello, 2G-Afroz!", 10, 10, 20, WHITE);
 
     // Drawing SuperEllipse
     for (size_t i = 0; i < points.size() - 1; i++) {
@@ -71,13 +72,18 @@ int main() {
     // For the last line
     DrawLine(points[0].x, points[0].y, points.back().x, points.back().y, WHITE);
 
-		// Drawing Values
-		DrawText(TextFormat("a:\t%0.2f\nb:\t%0.2f\nm:\t%0.2f\nn1:\t%0.2f\nn2:\t%0.2f\nn3:\t%0.2f\nPI: \t%0.2f\n", a, b, m, n1, n2, n3, pi_multiply), 10, 40, 15, WHITE);
+    // Adding GUI Controls
+    GuiSlider({20, 5, 790, 10}, "a: ", TextFormat("%0.2f", a), &a, 0, 400);   //  Height
+    GuiSlider({20, 20, 790, 10}, "b: ", TextFormat("%0.2f", b), &b, 0, 400);  // Width
+    GuiSlider({20, 35, 790, 10}, "m: ", TextFormat("%0.2f", m), &m, 0, 50);  // Lobes
+    m = std::floor(m);
+    GuiSlider({20, 50, 790, 10}, "n1: ", TextFormat("%0.2f", n1), &n1, 0, 2);  // n1
+    GuiSlider({20, 65, 790, 10}, "n2: ", TextFormat("%0.2f", n2), &n2, 0, 2);  // n2
+    GuiSlider({20, 80, 790, 10}, "n3: ", TextFormat("%0.2f", n3), &n3, 0, 2);  // n3
+    GuiSlider({20, 95, 790, 10}, "m: ", TextFormat("%0.2f", pi_multiply), &pi_multiply, 0, 50);  // pi_m
+    pi_multiply = std::floor(pi_multiply);
 
     EndDrawing();
-
-		n3 += 0.001f;
-
  	}
 
   // Clean up
